@@ -173,10 +173,12 @@ class WP
     {
         if ($cat_id = $this->findCategory($category, $parent))
         {
-            $result = $this->conn->query("SELECT count FROM wp_term_taxonomy WHERE 'term_id' = {$cat_id} AND 'taxonomy' LIKE 'product_cat' AND 'parent' = {$parent}");
+            $result = $this->conn->query("SELECT `count` FROM wp_term_taxonomy WHERE term_id = {$cat_id} AND taxonomy LIKE 'product_cat' AND parent = {$parent}");
             if ($result->rowCount())
             {
-                $count = $result->fetch()['count'] + 1;
+                $count = $result->fetch()['count'];
+                $count = (int)$count;
+                $count++;
                 $this->conn->update('wp_term_taxonomy', ['count' => $count ], ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'parent' => $parent]);
                 $this->conn->update('wp_termmeta', ['meta_value' => $count ], ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat']);
             }
