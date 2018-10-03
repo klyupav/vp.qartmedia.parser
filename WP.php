@@ -86,8 +86,11 @@ class WP
         {
             return false;
         }
-        $post_name = mb_strtolower($product['name'] . "-" . @$product['article']);
+        $post_name = mb_strtolower($product['name']);
         $post_name = preg_replace('%[\d\s]+%uis', '-', $post_name);
+        $post_name = preg_replace('%[\-]+%uis', '-', $post_name);
+        $post_name .=  "-" . mb_strtolower(@$product['article']);
+
         $param = [
             'post_author' => '1',
             'post_date' => date('Y-m-d H:i:s'),
