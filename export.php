@@ -25,7 +25,7 @@ $source_csv_filename = __DIR__.'/../CSV/NV_120.csv';
 $source_xls_filename = __DIR__.'/../CSV/NV_120.xls';
 $source_image_dir = '/Foto/';
 $site_url = 'http://vp.qartmedia.tmweb.ru';
-$site_root_dir = '..';
+$site_root_dir = __DIR__.'/..';
 
 $parser = new \Parser\Parser([
     'source_csv_filename' => $source_csv_filename,
