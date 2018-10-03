@@ -82,6 +82,12 @@ class WP
      */
     private function createProduct(array $product)
     {
+        if (!isset($product['name']) || empty($product['name']))
+        {
+            return false;
+        }
+        $post_name = mb_strtolower($product['name'] . "-" . @$product['article']);
+        $post_name = str_replace('%[\d ]+%uis', '-', $post_name);
         $param = [
             'post_author' => '1',
             'post_date' => date('Y-m-d H:i:s'),
@@ -93,7 +99,7 @@ class WP
             'comment_status' => 'closed',
             'ping_status' => 'closed',
             'post_password' => '',
-            'post_name' => isset($product['name']) ? strtolower(urlencode(mb_strtolower($product['name']))) : strtolower(urlencode('пустое имя')),
+            'post_name' => $post_name,
             'to_ping' => '',
             'pinged' => '',
             'post_modified' => date('Y-m-d H:i:s'),
