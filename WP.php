@@ -104,7 +104,7 @@ class WP
             'comment_status' => 'closed',
             'ping_status' => 'closed',
             'post_password' => '',
-            'post_name' => $post_name,
+            'post_name' => strtolower(urlencode($post_name)),
             'to_ping' => '',
             'pinged' => '',
             'post_modified' => date('Y-m-d H:i:s'),
@@ -153,6 +153,7 @@ class WP
                     $cat_id = $this->createCategory($category, isset($cat_id) ? $cat_id : 0);
                     $this->conn->insert('wp_term_relationships', ['object_id' => $pid, 'term_taxonomy_id' => $cat_id, 'term_order' => '0']);
                 }
+                $this->conn->insert('wp_term_relationships', ['object_id' => $pid, 'term_taxonomy_id' => 2, 'term_order' => '0']);
             }
             return $pid;
         }
