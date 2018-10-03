@@ -150,7 +150,7 @@ class WP
             {
                 foreach ($product['category'] as $category)
                 {
-                    $cat_id = $this->createCategory($category, isset($cat_id) ? $cat_id : 0);
+                    $cat_id = $this->createCategory(mb_strtoupper($category), isset($cat_id) ? $cat_id : 0);
                     $this->conn->insert('wp_term_relationships', ['object_id' => $pid, 'term_taxonomy_id' => $cat_id, 'term_order' => '0']);
                 }
                 $this->conn->insert('wp_term_relationships', ['object_id' => $pid, 'term_taxonomy_id' => 2, 'term_order' => '0']);
@@ -186,7 +186,6 @@ class WP
         }
         else
         {
-
             $slug = strtolower(urlencode(strtolower($this->translit_str($category))));
             if ($this->conn->insert('wp_terms', ['name' => $category, 'slug' => $slug, 'term_group' => 0, 'term_order' => 0,]))
             {
@@ -219,6 +218,57 @@ class WP
             {
                 return $row['term_id'];
             }
+        }
+        return false;
+    }
+
+    /*
+     * Update category tree
+     * @return array
+     */
+    public function updateCategoryTree()
+    {
+        $sql = "SELECT term.name, term.term_id FROM wp_terms as term, wp_term_taxonomy as tax WHERE tax.term_id = term.term_id AND tax.parent = 0 AND tax.taxonomy LIKE 'product_cat'";
+        $stmt = $this->conn->query($sql);
+        if ($stmt->rowCount())
+        {
+            $rows = $stmt->fetchAll();
+            $tree = [];
+            foreach ($rows as $row)
+            {
+                if ($row['name'] === 'Uncategorized')
+                {
+                    continue;
+                }
+                if ($sub_cats = $this->findCatsByParrent($row['term_id']))
+                {
+                    $tree[$row['term_id']] = $sub_cats;
+                }
+            }
+            $this->conn->update('wp_options', ['option_value' => serialize($tree) ], ['option_name' => 'product_cat_children']);
+            return $tree;
+        }
+        return false;
+    }
+
+
+    /*
+     * Find all sub cats
+     * @return array|bool
+     */
+    private function findCatsByParrent($parent)
+    {
+        $sql = "SELECT term_id FROM wp_term_taxonomy WHERE parent = {$parent} AND taxonomy LIKE 'product_cat'";
+        $stmt = $this->conn->query($sql);
+        if ($stmt->rowCount())
+        {
+            $rows = $stmt->fetchAll();
+            $cat_ids = [];
+            foreach ($rows as $row)
+            {
+                $cat_ids[] = $row['term_id'];
+            }
+            return $cat_ids;
         }
         return false;
     }
