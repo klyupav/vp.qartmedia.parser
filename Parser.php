@@ -85,6 +85,9 @@ class Parser
             for ($i = 0; $reader->count() > $i; $i++)
             {
                 $row = $reader->getRow($i);
+                foreach ($row as $key => $value) {
+                    $row[$key] = trim(trim($value), '"');
+                }
                 if ( $row[0] === $article )
                 {
                     return $row;
