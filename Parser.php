@@ -15,6 +15,7 @@ class Parser
     private $source_csv_filename = __DIR__.'/../CSV/NV_120.csv';
     private $source_xls_filename = __DIR__.'/../CSV/NV_120.xls';
     private $source_image_dir = '/Foto/';
+    private $reader;
 
     public function __construct($param)
     {
@@ -29,6 +30,11 @@ class Parser
         if (isset($param['source_xls_filename']))
         {
             $this->source_xls_filename = $param['source_xls_filename'];
+        }
+        if (file_exists($this->source_xls_filename))
+        {
+            $file = new \SplFileObject($this->source_xls_filename);
+            $this->reader = new ExcelReader($file);
         }
     }
 
@@ -80,11 +86,9 @@ class Parser
     {
         if (file_exists($this->source_xls_filename))
         {
-            $file = new \SplFileObject($this->source_xls_filename);
-            $reader = new ExcelReader($file);
-            for ($i = 0; $reader->count() > $i; $i++)
+            for ($i = 0; $this->reader->count() > $i; $i++)
             {
-                $row = $reader->getRow($i);
+                $row = $this->reader->getRow($i);
                 foreach ($row as $key => $value) {
                     $row[$key] = trim(trim($value), '"');
                 }
