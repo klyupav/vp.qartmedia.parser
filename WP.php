@@ -93,7 +93,7 @@ class WP
             'comment_status' => 'closed',
             'ping_status' => 'closed',
             'post_password' => '',
-            'post_name' => isset($product['name']) ? strtolower(urlencode($product['name'])) : strtolower(urlencode('пустое имя')),
+            'post_name' => isset($product['name']) ? strtolower(urlencode(strtolower($product['name']))) : strtolower(urlencode('пустое имя')),
             'to_ping' => '',
             'pinged' => '',
             'post_modified' => date('Y-m-d H:i:s'),
