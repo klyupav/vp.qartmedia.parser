@@ -192,7 +192,9 @@ class WP
             {
                 $cat_id = $this->conn->lastInsertId();
                 $this->conn->insert('wp_term_taxonomy', ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'description' => '', 'parent' => $parent, 'count' => '1' ]);
-                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'order', 'meta_value' => '1']);
+                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'thumbnail_id', 'meta_value' => '0']);
+                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'display_type', 'meta_value' => '']);
+                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'order', 'meta_value' => $parent > 0 ? '5' : '1']);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat', 'meta_value' => '1']);
                 return $cat_id;
             }
