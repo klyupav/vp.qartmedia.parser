@@ -50,3 +50,4 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
         ]);
     }
 }
+$tree = $wp->updateCategoryTree();
