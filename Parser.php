@@ -8,10 +8,12 @@
 
 namespace Parser;
 
+use Port\Excel\ExcelReader;
 
 class Parser
 {
     private $source_csv_filename = __DIR__.'/../CSV/NV_120.csv';
+    private $source_xls_filename = __DIR__.'/../CSV/NV_120.xls';
     private $source_image_dir = '/Foto/';
 
     public function __construct($param)
@@ -23,6 +25,10 @@ class Parser
         if (isset($param['source_csv_filename']))
         {
             $this->source_csv_filename = $param['source_csv_filename'];
+        }
+        if (isset($param['source_xls_filename']))
+        {
+            $this->source_xls_filename = $param['source_xls_filename'];
         }
     }
 
@@ -45,6 +51,7 @@ class Parser
     }
 
     /*
+     * Find product by article from csv file
      * @param string $article
      * @return array|bool
      */
@@ -54,6 +61,30 @@ class Parser
         {
             while ( $row = $this->next_row_csv($fp) )
             {
+                if ( $row[0] === $article )
+                {
+                    return $row;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /*
+     * Find product by article from csv file
+     * @param string $article
+     * @return array|bool
+     */
+    public function find_in_xls(string $article)
+    {
+        if (file_exists($this->source_xls_filename))
+        {
+            $file = new \SplFileObject($this->source_xls_filename);
+            $reader = new ExcelReader($file);
+            for ($i = 0; $reader->count() > $i; $i++)
+            {
+                $row = $reader->getRow($i);
                 if ( $row[0] === $article )
                 {
                     return $row;
