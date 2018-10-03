@@ -173,15 +173,24 @@ class WP
     {
         if ($cat_id = $this->findCategory($category, $parent))
         {
+            $result = $this->conn->query("SELECT `count` FROM wp_term_taxonomy WHERE 'term_id' = {$cat_id} AND 'taxonomy' LIKE 'product_cat' AND 'parent' = {$parent}");
+            if ($result->rowCount())
+            {
+                $count = $result->fetch()['count'] + 1;
+                $this->conn->update('wp_term_taxonomy', ['count' => $count ], ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'parent' => $parent]);
+                $this->conn->update('wp_termmeta', ['meta_value' => $count ], ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat']);
+            }
             return $cat_id;
         }
         else
         {
-            if ($this->conn->insert('wp_terms', ['name' => $category, 'slug' => urlencode($category), 'term_group' => 0, 'term_order' => 0,]))
+            $slug = strtolower(urlencode(mb_strtolower($category)));
+            if ($this->conn->insert('wp_terms', ['name' => $category, 'slug' => $slug, 'term_group' => 0, 'term_order' => 0,]))
             {
                 $cat_id = $this->conn->lastInsertId();
                 $this->conn->insert('wp_term_taxonomy', ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'description' => '', 'parent' => $parent, 'count' => '0' ]);
-                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'order', 'meta_value' => '0']);
+                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'order', 'meta_value' => '1']);
+                $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat', 'meta_value' => '1']);
                 return $cat_id;
             }
         }
