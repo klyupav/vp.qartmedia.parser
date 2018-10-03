@@ -93,7 +93,7 @@ class WP
             'comment_status' => 'closed',
             'ping_status' => 'closed',
             'post_password' => '',
-            'post_name' => isset($product['name']) ? urlencode($product['name']) : urlencode('пустое имя'),
+            'post_name' => isset($product['name']) ? strtolower(urlencode($product['name'])) : strtolower(urlencode('пустое имя')),
             'to_ping' => '',
             'pinged' => '',
             'post_modified' => date('Y-m-d H:i:s'),
@@ -292,6 +292,7 @@ class WP
             '_uncode_scroll_additional_padding' => '0',
             '_uncode_fullpage_mobile' => 'off',
             'slide_template' => 'default',
+            '_wpb_vc_js_status' => 'false',
             '_wpb_vc_js_status' => 'false',
         ];
         foreach ($meta as $key => $value)

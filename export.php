@@ -20,18 +20,11 @@ $connectionParams = array(
     'charset' => DB_CHARSET,
 );
 $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
-$sql = "SELECT * FROM wp_posts WHERE ID = 891";
 
 $source_csv_filename = __DIR__.'/../CSV/NV_120.csv';
 $source_image_dir = '/Foto/';
 $site_url = 'http://vp.qartmedia.tmweb.ru';
 $site_root_dir = '..';
-
-//$stmt = $conn->query($sql);
-//
-//while ($row = $stmt->fetch()) {
-//    print_r($row);
-//}
 
 $parser = new \Parser\Parser([
     'source_csv_filename' => $source_csv_filename,
