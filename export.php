@@ -10,6 +10,10 @@ require __DIR__.'/Parser.php';
 require __DIR__.'/WP.php';
 require __DIR__.'/../wp-config.php';
 
+$start = time();
+$time_limit = 1000;
+set_time_limit($time_limit);
+
 $config = new \Doctrine\DBAL\Configuration();
 $connectionParams = array(
     'dbname' => DB_NAME,
@@ -50,6 +54,10 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
             'name' => $row[2],
             'category' => empty(trim($row[3])) ? $row[4] : [ $row[3], $row[4] ] ,
         ]);
+    }
+    if (time() - $start > $time_limit - 60)
+    {
+        break;
     }
 }
 $tree = $wp->updateCategoryTree();
