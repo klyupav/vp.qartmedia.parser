@@ -293,7 +293,10 @@ class WP
                 {
                     $_thumbnail_id = $post_image_id;
                 }
-                $_product_image_gallery[] = $post_image_id;
+                else
+                {
+                    $_product_image_gallery[] = $post_image_id;
+                }
                 $this->_wp_attachment_metadata($src, $post_image_id);
             }
         }
