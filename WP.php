@@ -186,10 +186,13 @@ class WP
         }
         else
         {
-            $slug = strtolower(urlencode(strtolower($this->translit_str($category))));
+            $uri = strtolower($this->translit_str($category));
+            $slug = strtolower(urlencode($uri));
             if ($this->conn->insert('wp_terms', ['name' => $category, 'slug' => $slug, 'term_group' => 0, 'term_order' => 0,]))
             {
                 $cat_id = $this->conn->lastInsertId();
+                $slug = strtolower(urlencode($uri."-{$cat_id}"));
+                $this->conn->update('wp_terms', ['slug' => $slug ], ['term_id' => $cat_id]);
                 $this->conn->insert('wp_term_taxonomy', ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'description' => '', 'parent' => $parent, 'count' => '1' ]);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'thumbnail_id', 'meta_value' => '0']);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'display_type', 'meta_value' => '']);
