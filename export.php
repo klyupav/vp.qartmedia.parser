@@ -21,7 +21,7 @@ $connectionParams = array(
 );
 $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
 
-$source_csv_filename = __DIR__.'/../CSV/NV_120.csv';
+$source_csv_filename = __DIR__.'/../CSV/ОстаткиVP_Нижневартовск_120.csv';
 $source_xls_filename = __DIR__.'/../CSV/NV_120.xls';
 $source_image_dir = '/Foto/';
 $site_url = 'http://vp.qartmedia.tmweb.ru';
@@ -36,7 +36,7 @@ $wp = new \Parser\WP($conn, $site_url, $site_root_dir);
 
 foreach ($parser->get_all_article_from_images() as $article => $images)
 {
-    if ($row = $parser->find_in_xls($article))
+    if ($row = $parser->find_in_csv($article))
     {
         if (empty($row[2]))
         {
