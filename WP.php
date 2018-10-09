@@ -144,6 +144,7 @@ class WP
                 'gallery' => $gallery,
                 'sku' => @$product['article'],
                 'price' => @$product['price'],
+                'sale_price' => @$product['sale_price'],
             ]);
             $this->conn->insert('wp_rp4wp_cache', [
                 'post_id' => $pid,
