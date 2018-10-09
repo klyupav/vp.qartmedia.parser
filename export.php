@@ -50,8 +50,8 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
         $wp->addProduct([
             'article' => $article,
             'images' => $images,
-            'price' => $row[1],
-            'sale_price' => $row[8],
+            'price' => $row[8],
+            'sale_price' => $row[1],
             'name' => $row[2],
             'category' => empty(trim($row[3])) ? $row[4] : [ $row[3], $row[4] ] ,
         ]);
