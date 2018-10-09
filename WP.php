@@ -39,7 +39,7 @@ class WP
     {
         if ( $pid = $this->findProductIdByArticle($product['article']) )
         {
-            print($product['article']." - isset<br>\n");
+            print($product['article']." - isset. regular={$product['price']}, sale={$product['sale_price']}<br>\n");
         }
         else
         {
@@ -54,7 +54,7 @@ class WP
                 }
             }
             $this->createProduct($product);
-            print($product['article']." - added<br>\n");
+            print($product['article']." - added. regular={$product['price']}, sale={$product['sale_price']}<br>\n");
         }
     }
 
