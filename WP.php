@@ -59,7 +59,6 @@ class WP
                 }
             }
             $this->createProduct($product);
-
             print($product['article']." - added. {$price_info}<br>\n");
         }
     }
@@ -319,7 +318,7 @@ class WP
             '_uncode_featured_media_display' => 'carousel',
             '_sku' => isset($param['sku']) ? $param['sku'] : 'нет артикула',
             '_regular_price' => isset($param['price']) ? $param['price'] : '',
-            '_sale_price' => isset($param['sale_price']) && $param['sale_price'] < $param['price'] ? $param['sale_price'] : '',
+            '_sale_price' => isset($param['sale_price']) ? $param['sale_price'] : '',
             '_sale_price_dates_from' => '',
             '_sale_price_dates_to' => '',
             'total_sales' => '0',
@@ -344,7 +343,7 @@ class WP
             '_stock' => null,
             '_stock_status' => 'instock',
             '_product_version' => '3.4.5',
-            '_price' => isset($param['sale_price']) && $param['sale_price'] < $param['price'] ? $param['sale_price'] : @$param['price'],
+            '_price' => isset($param['sale_price']) ? $param['sale_price'] : @$param['price'],
             '_uncode_specific_menu_opaque' => 'off',
             '_uncode_specific_menu_no_shadow' => 'off',
             '_uncode_blocks_list' => '39',
