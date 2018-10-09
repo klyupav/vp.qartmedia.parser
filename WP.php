@@ -37,9 +37,14 @@ class WP
      */
     public function addProduct(array $product)
     {
+        $price_info = '';
+        if ( $product['price'] != $product['sale_price'] )
+        {
+            $price_info = "regular={$product['price']}, sale={$product['sale_price']}";
+        }
         if ( $pid = $this->findProductIdByArticle($product['article']) )
         {
-            print($product['article']." - isset. regular={$product['price']}, sale={$product['sale_price']}<br>\n");
+            print($product['article']." - isset. {$price_info}<br>\n");
         }
         else
         {
@@ -54,7 +59,8 @@ class WP
                 }
             }
             $this->createProduct($product);
-            print($product['article']." - added. regular={$product['price']}, sale={$product['sale_price']}<br>\n");
+
+            print($product['article']." - added. {$price_info}<br>\n");
         }
     }
 
