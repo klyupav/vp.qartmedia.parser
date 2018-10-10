@@ -56,7 +56,7 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
             'category' => empty(trim($row[3])) ? $row[4] : [ $row[3], $row[4] ] ,
         ]);
     }
-    if (time() - $start > $time_limit - 60)
+    if (time() - $start > $time_limit - 120)
     {
         break;
     }

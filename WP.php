@@ -20,8 +20,9 @@ class WP
     protected $conn;
     protected $site_url;
     protected $site_root_dir;
+    protected $upload_dir;
 
-    public function __construct(Connection $connection, string $site_url = 'http://vp.qartmedia.tmweb.ru', $site_root_dir = '..')
+    public function __construct(Connection $connection, string $site_url = 'http://vp.qartmedia.tmweb.ru', $site_root_dir = '..', $upload_dir = '/wp-content/uploads/')
     {
         $this->conn = $connection;
         if (!empty($site_url))
@@ -29,6 +30,7 @@ class WP
             $this->site_url = $site_url;
         }
         $this->site_root_dir = $site_root_dir;
+        $this->upload_dir = $upload_dir;
     }
 
     /*
@@ -52,7 +54,7 @@ class WP
             {
                 foreach ($product['images'] as $key => $src)
                 {
-                    if ($uploadImage = $this->copyImageToUpload($src))
+                    if ($uploadImage = $this->copyImageToUpload($src, $product['article']))
                     {
                         $product['images'][$key] = $uploadImage;
                     }
@@ -167,6 +169,24 @@ class WP
         {
             return false;
         }
+    }
+
+    /*
+     * Delete product post
+     * @param int $post_id
+     * @return int|bool
+     */
+    private function deleteProduct(int $post_id)
+    {
+        $this->conn->delete('wp_posts', ['ID' => $post_id]);
+        $image_ids = $this->deleteProductImage($post_id);
+        $this->deletePostMeta($post_id);
+        $this->conn->delete('wp_rp4wp_cache', ['post_id' => $post_id]);
+        $this->conn->update('wp_term_taxonomy', ['count' => 0 ], ['taxonomy' => 'product_cat']);
+        $this->conn->update('wp_termmeta', ['meta_value' => 0 ], ['meta_key' => 'product_count_product_cat']);
+        $this->conn->delete('wp_term_relationships', ['object_id' => $post_id]);
+
+        return true;
     }
 
     /*
@@ -390,6 +410,16 @@ class WP
     }
 
     /*
+     * Delete post meta
+     * @param int $post_id
+     * @return bool
+     */
+    private function deletePostMeta(int $post_id)
+    {
+        $this->conn->delete('wp_postmeta', ['post_id' => $post_id]);
+    }
+
+    /*
      * Create image post
      * @param string $image
      * @param int $post_parent
@@ -436,24 +466,64 @@ class WP
     }
 
     /*
+     * Delete image post
+     * @param int $post_parent
+     */
+    private function deleteProductImage(int $post_parent)
+    {
+        $stmt = $this->conn->query("SELECT ID FROM wp_posts WHERE post_parent={$post_parent} AND post_type = 'attachment'");
+        $image_ids = false;
+        if ($stmt->rowCount())
+        {
+            foreach ($stmt->fetchAll() as $row)
+            {
+                $this->conn->delete('wp_postmeta', ['post_id' => $row['ID'] ]);
+            }
+        }
+        $this->conn->delete('wp_posts', ['post_parent' => $post_parent, 'post_type' => 'attachment']);
+
+        return $image_ids;
+    }
+
+    /*
+     * Delete all products from database
+     */
+    public function deleteAllProducts()
+    {
+        $stmt = $this->conn->query("SELECT ID FROM wp_posts WHERE post_type = 'product'");
+        if ($stmt->rowCount())
+        {
+            foreach ($stmt->fetchAll() as $row)
+            {
+                $this->deleteProduct($row['ID']);
+            }
+        }
+        $this->updateCategoryTree();
+    }
+
+    /*
      * Copy image to upload dir
      * @param string $src
+     * @param string $article
      * @return string|bool
      */
-    private function copyImageToUpload(string $src)
+    private function copyImageToUpload(string $src, string $article = '')
     {
         $source = $this->site_root_dir.$src;
         if (file_exists($source))
         {
             $file = str_replace(' ', '-', basename($src));
-            $upload_dir = '/wp-content/uploads/'.date('Y/m/');
+            $upload_dir = $this->upload_dir."by_sku/{$article}/";
             $dir = $this->site_root_dir.$upload_dir;
             if (!file_exists($dir))
             {
                 mkdir($dir, 0777, true);
             }
             $dest = $dir.$file;
-            copy($source, $dest);
+            if (!file_exists($dest))
+            {
+                copy($source, $dest);
+            }
             return $upload_dir.$file;
         }
         return false;
@@ -472,7 +542,7 @@ class WP
         $meta = [
             'width' => 800,
             'height' => 1200,
-            'file' => str_replace('/wp-content/uploads/', '',$src),
+            'file' => str_replace($this->upload_dir, '',$src),
             'size' => [
                 'thumbnail' => [
                     'file' => $pathinfo['filename'].'-150x150.'.$pathinfo['extension'],
@@ -565,6 +635,11 @@ class WP
                 mkdir($dir, 0777, true);
             }
             $ir = new ImageResize($source);
+//            $dest = $dir.$pathinfo['basename'];
+//            if (!file_exists($dest))
+//            {
+//                $ir->save($dest);
+//            }
             foreach ( $meta['size'] as $img )
             {
                 $file = $img['file'];
