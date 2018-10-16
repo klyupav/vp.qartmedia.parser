@@ -31,4 +31,4 @@ $wp = new \Parser\WP($conn, $site_url, $site_root_dir);
 
 $wp->deleteAllProducts();
 
-//exec('php export.php');
+exec('php export.php');
