@@ -147,6 +147,7 @@ class WP
                 'sku' => @$product['article'],
                 'price' => @$product['price'],
                 'sale_price' => @$product['sale_price'],
+                'attr' => @$product['attr'],
             ]);
             $this->conn->insert('wp_rp4wp_cache', [
                 'post_id' => $pid,
@@ -326,6 +327,55 @@ class WP
                 $this->_wp_attachment_metadata($src, $post_image_id);
             }
         }
+        foreach ($param['attr'] as $key => $attr)
+        {
+            if (empty($attr))
+            {
+                continue;
+            }
+            switch ($key){
+                case 'Длинна':
+                    $_product_attributes['%d0%b4%d0%bb%d0%b8%d0%bd%d0%bd%d0%b0'] = [
+                        'name' => 'Длинна',
+                        'value' => $attr,
+                        'position' => 0,
+                        'is_visible' => 1,
+                        'is_variation' => 0,
+                        'is_taxonomy' => 0,
+                    ];
+                    break;
+                case 'Цвет':
+                    $_product_attributes['%d1%86%d0%b2%d0%b5%d1%82'] = [
+                        'name' => 'Цвет',
+                        'value' => $attr,
+                        'position' => 1,
+                        'is_visible' => 1,
+                        'is_variation' => 0,
+                        'is_taxonomy' => 0,
+                    ];
+                    break;
+                case 'Состав':
+                    $_product_attributes['%d1%81%d0%be%d1%81%d1%82%d0%b0%d0%b2'] = [
+                        'name' => 'Состав',
+                        'value' => $attr,
+                        'position' => 2,
+                        'is_visible' => 1,
+                        'is_variation' => 0,
+                        'is_taxonomy' => 0,
+                    ];
+                    break;
+                case 'Утеплитель':
+                    $_product_attributes['%d1%83%d1%82%d0%b5%d0%bf%d0%bb%d0%b8%d1%82%d0%b5%d0%bb%d1%8c'] = [
+                        'name' => 'Утеплитель',
+                        'value' => $attr,
+                        'position' => 3,
+                        'is_visible' => 1,
+                        'is_variation' => 0,
+                        'is_taxonomy' => 0,
+                    ];
+                    break;
+            }
+        }
         $meta = [
             '_dwls_first_image' => '',
             '_vc_post_settings' => 'a:1:{s:10:"vc_grid_id";a:0:{}}',
@@ -403,6 +453,10 @@ class WP
             '_wpb_vc_js_status' => 'false',
             '_wpb_vc_js_status' => 'false',
         ];
+        if (isset($_product_attributes))
+        {
+            $meta['_product_attributes'] = serialize($_product_attributes);
+        }
         foreach ($meta as $key => $value)
         {
             $this->conn->insert('wp_postmeta', ['meta_key' => $key, 'meta_value' => $value, 'post_id' => @$param['post_id'] ]);

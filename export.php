@@ -53,7 +53,13 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
             'price' => $row[8],
             'sale_price' => $row[1],
             'name' => $row[2],
-            'category' => empty(trim($row[3])) ? $row[4] : [ $row[3], $row[4] ] ,
+            'category' => empty(trim($row[3])) ? $row[4] : [ $row[3], $row[4] ],
+            'attr' => [
+                'Длинна' => trim($row[11]),
+                'Цвет' => trim($row[12]),
+                'Состав' => trim($row[9]),
+                'Утеплитель' => trim($row[10]),
+            ],
         ]);
     }
     if (time() - $start > $time_limit - 120)
