@@ -190,6 +190,35 @@ class WP
         return true;
     }
 
+
+    /*
+     * Increase parent category count
+     * @param int $cat_id
+     * @return int|bool
+     */
+    private function updateCategoryCount(int $cat_id = 0)
+    {
+        if ($cat_id)
+        {
+            $result = $this->conn->query("SELECT * FROM wp_term_taxonomy WHERE term_id = {$cat_id} AND taxonomy LIKE 'product_cat'");
+            if ($result->rowCount())
+            {
+                $row = $result->fetch();
+                $count = $row['count'];
+                $count = (int)$count;
+                $count++;
+                $this->conn->update('wp_term_taxonomy', ['count' => $count ], ['term_id' => $cat_id, 'taxonomy' => 'product_cat']);
+                $this->conn->update('wp_termmeta', ['meta_value' => $count ], ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat']);
+                if ($row['parent'])
+                {
+                    $this->updateCategoryCount($row['parent']);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     /*
      * Create category
      * @param string $category
@@ -200,16 +229,19 @@ class WP
     {
         if ($cat_id = $this->findCategory($category, $parent))
         {
-            $result = $this->conn->query("SELECT `count` FROM wp_term_taxonomy WHERE term_id = {$cat_id} AND taxonomy LIKE 'product_cat' AND parent = {$parent}");
-            if ($result->rowCount())
+//            $result = $this->conn->query("SELECT `count` FROM wp_term_taxonomy WHERE term_id = {$cat_id} AND taxonomy LIKE 'product_cat' AND parent = {$parent}");
+//            if ($result->rowCount())
+//            {
+//                $count = $result->fetch()['count'];
+//                $count = (int)$count;
+//                $count++;
+//                $this->conn->update('wp_term_taxonomy', ['count' => $count ], ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'parent' => $parent]);
+//                $this->conn->update('wp_termmeta', ['meta_value' => $count ], ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat']);
+//            }
+            if ($this->updateCategoryCount($cat_id))
             {
-                $count = $result->fetch()['count'];
-                $count = (int)$count;
-                $count++;
-                $this->conn->update('wp_term_taxonomy', ['count' => $count ], ['term_id' => $cat_id, 'taxonomy' => 'product_cat', 'parent' => $parent]);
-                $this->conn->update('wp_termmeta', ['meta_value' => $count ], ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat']);
+                return $cat_id;
             }
-            return $cat_id;
         }
         else
         {
@@ -225,7 +257,10 @@ class WP
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'display_type', 'meta_value' => '']);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'order', 'meta_value' => $parent > 0 ? '5' : '1']);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat', 'meta_value' => '1']);
-                return $cat_id;
+                if ($this->updateCategoryCount($cat_id))
+                {
+                    return $cat_id;
+                }
             }
         }
         return false;
