@@ -67,4 +67,5 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
         break;
     }
 }
+$this->conn->delete('wp_options', ['option_value' => '_transient_wc_term_counts']);
 $tree = $wp->updateCategoryTree();
