@@ -258,12 +258,13 @@ class WP
      */
     public function updateCategoryTree()
     {
-        $sql = "SELECT term.name, term.term_id FROM wp_terms as term, wp_term_taxonomy as tax WHERE tax.term_id = term.term_id AND tax.parent = 0 AND tax.taxonomy LIKE 'product_cat'";
+        $sql = "SELECT term.name, term.term_id FROM wp_terms as term, wp_term_taxonomy as tax WHERE tax.term_id = term.term_id AND tax.taxonomy LIKE 'product_cat'";
         $stmt = $this->conn->query($sql);
         if ($stmt->rowCount())
         {
             $rows = $stmt->fetchAll();
             $tree = [];
+//            print_r($rows);die();
             foreach ($rows as $row)
             {
                 if ($row['name'] === 'Uncategorized')
