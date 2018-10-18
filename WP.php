@@ -209,10 +209,6 @@ class WP
                 $count++;
                 $this->conn->update('wp_term_taxonomy', ['count' => $count ], ['term_id' => $cat_id, 'taxonomy' => 'product_cat']);
                 $this->conn->update('wp_termmeta', ['meta_value' => $count ], ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat']);
-                if ($row['parent'])
-                {
-                    $this->updateCategoryCount($row['parent']);
-                }
             }
             return true;
         }
@@ -257,10 +253,10 @@ class WP
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'display_type', 'meta_value' => '']);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'order', 'meta_value' => $parent > 0 ? '5' : '1']);
                 $this->conn->insert('wp_termmeta', ['term_id' => $cat_id, 'meta_key' => 'product_count_product_cat', 'meta_value' => '1']);
-                if ($this->updateCategoryCount($cat_id))
-                {
-                    return $cat_id;
-                }
+//                if ($this->updateCategoryCount($cat_id))
+//                {
+//                    return $cat_id;
+//                }
             }
         }
         return false;
