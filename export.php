@@ -51,11 +51,15 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
             'article' => $article,
             'images' => $images,
             'price' => $row[8],
+            'credit1' => $row[15],
+            'credit2' => $row[16],
+            'credit3' => $row[17],
             'sale_price' => $row[1],
             'name' => $row[2],
+            'desc' => 'Шуба, выполненная из переливающегося меха скандинавской норки, подчеркнет изысканность повседневного образа динамичной женщины, сделав акцент на безупречности ее имиджа. Эксклюзивная комбинированная расцветка изделия, созданная в сочетании контрастных градаций белого и черного оттенка – это отличительная черта модели.',
             'category' => empty(trim($row[3])) ? $row[4] : [ $row[3], $row[4], $row[5] ],
             'attr' => [
-                'Длинна' => trim($row[11]),
+                'Длина' => trim($row[11]),
                 'Цвет' => trim($row[12]),
                 'Состав' => trim($row[9]),
                 'Утеплитель' => trim($row[10]),
@@ -67,5 +71,5 @@ foreach ($parser->get_all_article_from_images() as $article => $images)
         break;
     }
 }
-$this->conn->delete('wp_options', ['option_value' => '_transient_wc_term_counts']);
+$wp->conn->delete('wp_options', ['option_value' => '_transient_wc_term_counts']);
 $tree = $wp->updateCategoryTree();

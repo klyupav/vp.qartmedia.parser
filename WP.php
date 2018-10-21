@@ -17,7 +17,7 @@ class WP
      * Database connection
      * @var Doctrine\DBAL\Connection $conn
      */
-    protected $conn;
+    public $conn;
     protected $site_url;
     protected $site_root_dir;
     protected $upload_dir;
@@ -104,7 +104,7 @@ class WP
             'post_author' => '1',
             'post_date' => date('Y-m-d H:i:s'),
             'post_date_gmt' => date('Y-m-d H:i:s'),
-            'post_content' => '',
+            'post_content' => isset($product['desc']) ? $product['desc'] : '',
             'post_title' => isset($product['name']) ? $product['name'] : 'пустое имя',
             'post_excerpt' => '',
             'post_status' => 'publish',
@@ -146,6 +146,9 @@ class WP
                 'gallery' => $gallery,
                 'sku' => @$product['article'],
                 'price' => @$product['price'],
+                'credit1' => @$product['credit1'],
+                'credit2' => @$product['credit2'],
+                'credit3' => @$product['credit3'],
                 'sale_price' => @$product['sale_price'],
                 'attr' => @$product['attr'],
             ]);
@@ -366,10 +369,10 @@ class WP
                 continue;
             }
             switch ($key){
-                case 'Длинна':
-                    $_product_attributes['%d0%b4%d0%bb%d0%b8%d0%bd%d0%bd%d0%b0'] = [
-                        'name' => 'Длинна',
-                        'value' => $attr,
+                case 'Длина':
+                    $_product_attributes['%d0%b4%d0%bb%d0%b8%d0%bd%d0%b0'] = [
+                        'name' => 'Длина',
+                        'value' => $attr. " см",
                         'position' => 0,
                         'is_visible' => 1,
                         'is_variation' => 0,
@@ -409,6 +412,9 @@ class WP
             }
         }
         $meta = [
+            '_pppprice2' => isset($param['credit3']) ? $param['credit3'] : '',
+            '_pppprice' => isset($param['credit2']) ? $param['credit2'] : '',
+            '_rrpprice' => isset($param['credit1']) ? $param['credit1'] : '',
             '_dwls_first_image' => '',
             '_vc_post_settings' => 'a:1:{s:10:"vc_grid_id";a:0:{}}',
             '_wc_review_count' => '0',
