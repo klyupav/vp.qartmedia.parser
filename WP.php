@@ -149,6 +149,7 @@ class WP
                 'credit1' => @$product['credit1'],
                 'credit2' => @$product['credit2'],
                 'credit3' => @$product['credit3'],
+                'sort' => @$product['sort'],
                 'sale_price' => @$product['sale_price'],
                 'attr' => @$product['attr'],
             ]);
@@ -412,6 +413,7 @@ class WP
             }
         }
         $meta = [
+            '_pppprice3' => isset($param['sort']) ? $param['sort'] : '',
             '_pppprice2' => isset($param['credit3']) ? $param['credit3'] : '',
             '_pppprice' => isset($param['credit2']) ? $param['credit2'] : '',
             '_rrpprice' => isset($param['credit1']) ? $param['credit1'] : '',
