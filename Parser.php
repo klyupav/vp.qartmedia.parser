@@ -67,7 +67,7 @@ class Parser
         {
             while ( $row = $this->next_row_csv($fp) )
             {
-                if ( preg_match("%".$row[0]."%uis", $article))
+                if ( $row[0] === $article )
                 {
                     return $row;
                 }
@@ -111,9 +111,11 @@ class Parser
         $article = [];
         foreach ($files as $file)
         {
-            if (preg_match('%([^ ]+) \d%uis', $file, $match))
+            if (preg_match("%([^ \.]+)( |\.)%uis", $file, $match))
             {
-                $article[$match[1]][] = $this->source_image_dir.$file;
+                $sku = mb_strtoupper($match[1]);
+                $sku = strtoupper($sku);
+                $article[$sku][] = $this->source_image_dir.$file;
             }
         }
 
