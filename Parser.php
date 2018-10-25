@@ -67,7 +67,7 @@ class Parser
         {
             while ( $row = $this->next_row_csv($fp) )
             {
-                if ( preg_match("%".$row[0]."%uis", $row))
+                if ( preg_match("%".$row[0]."%uis", $article))
                 {
                     return $row;
                 }
