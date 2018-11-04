@@ -152,6 +152,7 @@ class WP
                 'sort' => @$product['sort'],
                 'sale_price' => @$product['sale_price'],
                 'attr' => @$product['attr'],
+                'related' => @$product['related'],
             ]);
             $this->conn->insert('wp_rp4wp_cache', [
                 'post_id' => $pid,
@@ -412,7 +413,22 @@ class WP
                     break;
             }
         }
+
+        if (isset($param['related']))
+        {
+            $related_ids = [];
+            $arts = explode(',', $param['related']);
+            foreach ($arts as $art)
+            {
+                if($find = $this->findProductIdByArticle(trim($art)))
+                {
+                    $related_ids[] = $find;
+                }
+            }
+        }
+
         $meta = [
+            '_wcrp_related_ids' => isset($related_ids) && !empty($related_ids) ? serialize($related_ids) : '',
             '_pppprice3' => isset($param['sort']) ? $param['sort'] : '',
             '_pppprice2' => isset($param['credit3']) ? $param['credit3'] : '',
             '_pppprice' => isset($param['credit2']) ? $param['credit2'] : '',
