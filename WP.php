@@ -47,7 +47,7 @@ class WP
         if ( $pid = $this->findProductIdByArticle($product['article']) )
         {
             // update product
-            $this->updateProduct($product, $pid);
+//            $this->updateProduct($product, $pid);
             print($product['article']." - isset. {$price_info}<br>\n");
         }
         else
