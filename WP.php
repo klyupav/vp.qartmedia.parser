@@ -47,7 +47,7 @@ class WP
         if ( $pid = $this->findProductIdByArticle($product['article']) )
         {
             // update product
-            $this->updateProduct($product);
+            $this->updateProduct($product, $pid);
             print($product['article']." - isset. {$price_info}<br>\n");
         }
         else
@@ -88,9 +88,10 @@ class WP
     /*
      * Update product post
      * @param array $product
+     * @param integer $pid
      * @return int|bool
      */
-    private function updateProduct(array $product, $pid)
+    private function updateProduct(array $product, int $pid)
     {
         return $this->updatePostMeta(['related' => @$product['related']], $pid);
     }
