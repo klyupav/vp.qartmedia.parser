@@ -46,10 +46,13 @@ class WP
         }
         if ( $pid = $this->findProductIdByArticle($product['article']) )
         {
+            // update product
+            $this->updateProduct($product);
             print($product['article']." - isset. {$price_info}<br>\n");
         }
         else
         {
+            // create product
             if(isset($product['images']) && is_array($product['images']))
             {
                 foreach ($product['images'] as $key => $src)
@@ -80,6 +83,16 @@ class WP
             return $row['post_id'];
         }
         return false;
+    }
+
+    /*
+     * Update product post
+     * @param array $product
+     * @return int|bool
+     */
+    private function updateProduct(array $product, $pid)
+    {
+        return $this->updatePostMeta(['related' => @$product['related']], $pid);
     }
 
     /*
@@ -341,9 +354,39 @@ class WP
     }
 
     /*
+     * Update post meta
+     * @param array $param
+     * @param integer $pid
+     * @return bool
+     */
+    private function updatePostMeta(array $param, int $pid)
+    {
+        if (isset($param['related']))
+        {
+            $related_ids = [];
+            $arts = explode(',', $param['related']);
+            foreach ($arts as $art)
+            {
+                if($find = $this->findProductIdByArticle(trim($art)))
+                {
+                    $related_ids[] = $find;
+                }
+            }
+            $meta = [
+                '_wcrp_related_ids' => isset($related_ids) && !empty($related_ids) ? serialize($related_ids) : '',
+            ];
+            foreach ($meta as $key => $value)
+            {
+                $this->conn->update('wp_postmeta', ['meta_key' => $key, 'meta_value' => $value, 'post_id' => $pid ]);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /*
      * Create post meta
      * @param array $param
-     * @param int $post_parent
      * @return bool
      */
     private function createPostMeta(array $param)
