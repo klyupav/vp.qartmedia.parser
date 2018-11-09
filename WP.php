@@ -377,7 +377,7 @@ class WP
             ];
             foreach ($meta as $key => $value)
             {
-                $this->conn->update('wp_postmeta', ['meta_key' => $key, 'meta_value' => $value, 'post_id' => $pid ]);
+                $this->conn->update('wp_postmeta', ['meta_key' => $key, 'meta_value' => $value], ['post_id' => $pid]);
             }
             return true;
         }
