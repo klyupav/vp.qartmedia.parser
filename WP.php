@@ -47,7 +47,7 @@ class WP
         if ( $pid = $this->findProductIdByArticle($product['article']) )
         {
             // update product
-//            $this->updateProduct($product, $pid);
+            $this->updateProduct($product, $pid);
             print($product['article']." - isset. {$price_info}<br>\n");
         }
         else
@@ -378,7 +378,7 @@ class WP
             ];
             foreach ($meta as $key => $value)
             {
-                $this->conn->update('wp_postmeta', ['meta_key' => $key, 'meta_value' => $value], ['post_id' => $pid]);
+                $this->conn->update('wp_postmeta', ['meta_value' => $value], ['post_id' => $pid, 'meta_key' => $key]);
             }
             return true;
         }
@@ -472,7 +472,7 @@ class WP
 //        }
 
         $meta = [
-//            '_wcrp_related_ids' => isset($related_ids) && !empty($related_ids) ? serialize($related_ids) : '',
+            '_wcrp_related_ids' => isset($related_ids) && !empty($related_ids) ? serialize($related_ids) : '',
             '_pppprice3' => isset($param['sort']) ? $param['sort'] : '',
             '_pppprice2' => isset($param['credit3']) ? $param['credit3'] : '',
             '_pppprice' => isset($param['credit2']) ? $param['credit2'] : '',
