@@ -11,7 +11,7 @@ require __DIR__.'/WP.php';
 require __DIR__.'/../wp-config.php';
 
 $start = time();
-$time_limit = 1000;
+$time_limit = PARSER_TIMELIMIT;
 set_time_limit($time_limit);
 
 $config = new \Doctrine\DBAL\Configuration();
