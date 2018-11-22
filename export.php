@@ -25,7 +25,7 @@ $connectionParams = array(
 );
 $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
 
-$source_csv_filename = __DIR__.'/../CSV/ОстаткиVP_Пермь_22.csv';
+$source_csv_filename = __DIR__.'/../CSV/'.PARSER_CSVFILENAME;
 $source_xls_filename = __DIR__.'/../CSV/NV_120.xls';
 $source_image_dir = '/Foto/';
 $site_url = 'http://vp.qartmedia.tmweb.ru';
