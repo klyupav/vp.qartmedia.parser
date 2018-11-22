@@ -20,7 +20,7 @@ $connectionParams = array(
     'user' => DB_USER,
     'password' => DB_PASSWORD,
     'host' => DB_HOST,
-    'driver' => 'pdo_mysql',
+    'driver' => PARSER_DB_DRIVER,
     'charset' => DB_CHARSET,
 );
 $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
